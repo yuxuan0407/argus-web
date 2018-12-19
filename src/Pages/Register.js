@@ -35,8 +35,7 @@ class Register extends Component {
           console.log(data)
           alert('Registered Successfully! You can now Log In!')
           const credit_var = data.credit
-          localStorage.setItem('username', this.state.username)
-          localStorage.setItem('password', this.state.password) 
+          localStorage.setItem('access_token', data.data.access_token)
         }) 
         .catch(err => {
           console.log(err)

@@ -12,14 +12,10 @@ class Home extends Component{
 
     fileUploadHandler = () =>{
         console.log(this.state.selectedFile)
+        var accessToken = localStorage['access_token']
         const fd = new FormData();
         fd.append('photo', this.state.selectedFile, this.state.selectedFile.name);
-        axios.post(constants.host + '/login', { username: localStorage.getItem('username'), password: localStorage.getItem('password') })
-        .then(res => {
-            const accessToken = res.data.access_token
-            console.log('acctok', accessToken)
-            fd.append('access_token', accessToken)
-            return axios(constants.host + '/classify', {
+        axios(constants.host + '/classify', {
                 method: 'post',
                 headers: {
                   'Content-Type': 'multipart/form-data',
@@ -27,7 +23,6 @@ class Home extends Component{
                 },
                 data: fd
               })
-        })
         
         .then(res => {
             console.log('resolved', res.data);
@@ -36,8 +31,6 @@ class Home extends Component{
             console.log('errored', err)
         })        
     }
-
-      
 
     render(){
         return(

@@ -15,7 +15,8 @@ class Login extends Component {
     super(props);
     this.state = {
        username:'',
-       password:''
+       password:'',
+       access_token: ''
     }
 }
 
@@ -35,8 +36,7 @@ class Login extends Component {
         console.log(data)
         // alert('successful login')
         const credit_var = data.credit
-        localStorage.setItem('username', this.state.username)
-        localStorage.setItem('password', this.state.password)
+        localStorage.setItem('access_token', data.data.access_token)
         prop.history.push('/Pages/Dash');
       })
       .catch(err => {
