@@ -22,7 +22,7 @@ class Home extends Component{
             return axios(constants.host + '/classify', {
                 method: 'post',
                 headers: {
-                  'Content-Type': 'application/x-www-form-urlencoded',
+                  'Content-Type': 'multipart/form-data',
                   "Authorization": 'Bearer ' + accessToken
                 },
                 data: fd
