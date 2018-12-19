@@ -5,20 +5,16 @@ import './AMenu.css';
 
 class AMenu extends Component {
 
-
     render() {
         
         const backgroundUrl = `url(${this.props.logo})` 
-
+        const { classes } = this.props;
 
         const lists = (
             <div className ='menu__link'>
-
                   <Link to='/Pages/Home'>Home</Link> &nbsp;&nbsp;&nbsp;&nbsp;
                   <Link to='/Pages/History'>History</Link> &nbsp;&nbsp;&nbsp;&nbsp;
-                  <Link to='/Pages/Profile'>Profile</Link> &nbsp;&nbsp;&nbsp;&nbsp;
                   <Link to='/Pages/Logout'>Logout</Link> 
-
               </div>
           );
   
@@ -31,7 +27,6 @@ class AMenu extends Component {
                     <ul className="menu__list">
                         {lists}
                     </ul>
-
                 </div>
             </nav>
         );

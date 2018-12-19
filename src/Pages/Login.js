@@ -6,18 +6,17 @@ import Card from '@material-ui/core/Card';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
 import ArgusLogo from '../ArgusLogo.png';
+import constants from '../constants/general';
+import axios from 'axios';
+
 
 class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-       email:'',
+       username:'',
        password:''
-
     }
-//    this.handleChange = this.handleChange.bind(this);
-//    this.login = this.login.bind(this);
-//    this.checkLoggedIn = this.checkLoggedIn.bind(this);
 }
 
   handleChange = name => event => {
@@ -26,33 +25,24 @@ class Login extends Component {
   });
   }
 
-//   componentDidMount(){
-//     this.checkLoggedIn();
-//   }
-
-//   checkLoggedIn(){
-//     var prop = this.props;
-//     firebase.auth().onAuthStateChanged(function(user) {
-//        if (user) {
-//           prop.history.push('/dashboard');
-//        }
-//     });
-//   }
-
-//   login(e){
-//      e.preventDefault();
-//      var prop = this.props;
-//      firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
-//      .then(function(){
-//         prop.history.push('/dashboard');
-//      })
-//      .catch(function(error) {
-//         alert(error.message);
-//      });
-//   }
-
   handleOnClick = () =>{
-      this.setState(<Link to ='/Pages/Dash'/> )
+    var prop = this.props;
+      axios.post(constants.host + '/login', {
+          'username': this.state.username,
+          'password': this.state.password
+      })
+      .then(data => {
+        console.log(data)
+        // alert('successful login')
+        const credit_var = data.credit
+        localStorage.setItem('username', this.state.username)
+        localStorage.setItem('password', this.state.password)
+        prop.history.push('/Pages/Dash');
+      })
+      .catch(err => {
+        console.log(err)
+        alert ('Please register for an account')
+      })
   }
   render() {
 
@@ -78,10 +68,10 @@ class Login extends Component {
               Log In
             </Typography>
             <TextField
-              type = "email"
+              type = "username"
               className=""
-              placeholder ="Enter Your Email"
-              onChange={this.handleChange('email')}
+              placeholder ="Enter Your Username"
+              onChange={this.handleChange('username')}
             />
             <br/>
             <TextField
@@ -93,7 +83,6 @@ class Login extends Component {
             <br/>
             <Button
               onClick={this.handleOnClick}
-              type = 'submit'
               variant="outlined"
               style = {{marginTop:'15px'}}
             >

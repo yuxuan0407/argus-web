@@ -6,19 +6,17 @@ import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import './Login.css';
 import ArgusLogo from '../ArgusLogo.png';
-
+import constants from '../constants/general';
+import axios from 'axios';
 
 class Register extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name:'',
-            email:'',
+            username:'',
             password:'',
             checkPassword:''
         }
-    //     this.handleChange = this.handleChange.bind(this);
-    //     this.createUser = this.createUser.bind(this);
     }
 
     handleChange = name => event => {
@@ -27,29 +25,24 @@ class Register extends Component {
         });
     }
 
-    // createUser(e){
-    //   e.preventDefault();
-    //   var userName = this.state.name;
-    //   var userEmail = this.state.email;
-    //   var prop = this.props;
-    //   if(this.state.checkPassword === this.state.password){
-    //      .then(function(){
-
-    //         .then(function(){
-    //            prop.history.push('/dashboard');
-    //         })
-    //         .catch(function (error) {
-    //            alert(error.message);
-    //         });
-    //      })
-    //      .catch(function (error) {
-    //         alert(error.message);
-    //      });
-    //   }
-    //   else{
-    //      alert("Passwords do not match");
-    //   }
-    // }
+    createUser = () =>{
+        console.log(this.state.username, this.state.password)
+        axios.post(constants.host + '/register', {
+            'username': this.state.username,
+            'password': this.state.password
+        })
+        .then(data => {
+          console.log(data)
+          alert('Registered Successfully! You can now Log In!')
+          const credit_var = data.credit
+          localStorage.setItem('username', this.state.username)
+          localStorage.setItem('password', this.state.password) 
+        }) 
+        .catch(err => {
+          console.log(err)
+          alert (err.message)
+        })
+    }
 
     render() {
         return (
@@ -72,19 +65,9 @@ class Register extends Component {
                 </Typography>
                     <form>
                         < TextField className = ""
-                            placeholder = "Full Name"
-                            onChange={this.handleChange('name')}
+                            placeholder = "Userame"
+                            onChange={this.handleChange('username')}
                             />
-
-                        <br/>
-
-                        < TextField
-                            className = ""
-                            type = 'email'
-                            placeholder = "Email Address"
-                            style = {{marginTop:'15px'}}
-                            onChange={this.handleChange('email')}
-                        />
 
                         <br/>
 
@@ -105,12 +88,11 @@ class Register extends Component {
                             style = {{marginTop:'15px'}}
                             onChange={this.handleChange('checkPassword')}
                         />
-
+                        
                         <br/>
 
                         <Button
                             onClick={this.createUser}
-                            type = 'submit'
                             variant = "outlined"
                             style = {{marginTop:'15px'}}
                         >
@@ -121,7 +103,7 @@ class Register extends Component {
 
                     <p>Already have an account? </p>
                     <Link
-                        to = '/Pages/Login'
+                        to = '/'
                         variant = "outlined"
                         style = {{marginTop:'15px'}}
                     >

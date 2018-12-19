@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import Camera from 'react-camera';
 import './Home.css';
+import constants from '../constants/general';
 
 class Home extends Component{
     fileSelectHandler = event =>{
@@ -11,74 +11,52 @@ class Home extends Component{
     }
 
     fileUploadHandler = () =>{
+        console.log(this.state.selectedFile)
         const fd = new FormData();
-        fd.append('image', this.state.selectedFile, this.state.selectedFile.name);
-        axios.post('null', fd)
+        fd.append('photo', this.state.selectedFile, this.state.selectedFile.name);
+        axios.post(constants.host + '/login', { username: localStorage.getItem('username'), password: localStorage.getItem('password') })
         .then(res => {
-            console.log(res);
-        });
+            const accessToken = res.data.access_token
+            console.log('acctok', accessToken)
+            fd.append('access_token', accessToken)
+            return axios(constants.host + '/classify', {
+                method: 'post',
+                headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                  "Authorization": 'Bearer ' + accessToken
+                },
+                data: fd
+              })
+        })
+        
+        .then(res => {
+            console.log('resolved', res.data);
+        })
+        .catch( err => {
+            console.log('errored', err)
+        })        
     }
 
-    constructor(props) {
-        super(props);
-        this.takePicture = this.takePicture.bind(this);
-      }
-    
-      takePicture() {
-        this.camera.capture()
-        .then(pic => {
-            const blobFileURL = URL.createObjectURL(pic)
-            // Fetch the blob from the blob file url
-            fetch(blobFileURL)
-            .then(maybe_a_blob => {
-                // The blob has been fetched, now attach it as an image to FormData to upload
-                // and attaach to the body of the request
-
-                console.log(maybe_a_blob)
-                // fetch('http://54.39.185.15:3002/classify', {
-                //     method: 'POST',
-                //     headers: {
-                //         'Accept': 'application/json',
-                //     },
-                //     body: formData
-                // })
-                // .then(results => {
-                    // Deal with the JSON response from the server
-                //     console.log(results)
-                // })
-            })
-            // fetch('http://54.39.185.15:3002/classify', {
-            //     method: 'POST',
-            //     body: 
-            // })
-        //   this.img.src = URL.createObjectURL(pic);
-        //   this.img.onload = () => { URL.revokeObjectURL(this.src); }
-        })
-      }
       
 
     render(){
         return(
+            <div>
             <center>
-            <Camera
-            style={{width: 500, height: 500}}
-            ref={(cam) => {this.camera = cam;}}/>
-            
-            <button className="captureButton"
-            onClick={this.takePicture}> Capture </button>
-
-            <br />
-            <br />
-            <text > OR </text>
+                <p className='homeText'> Welcome to Argus!</p> 
+                <p className='homeText1'>Please upload a car image you want to identify!</p>
             <br />
             <br />
             <input type="file" onChange={this.fileSelectHandler}
             ref={fileInput => this.fileInput = fileInput}/>
 
-            <button className="uploadButton" onClick={this.fileSelectHandler}>Upload</button>
+            <button className="uploadButton" onClick={this.fileUploadHandler}>Upload</button>
+
             <br />
             <br />
             </center>
+            
+            </div>
         );
     }
 }
